@@ -465,7 +465,7 @@ int main(int argc, char* argv[]){
 		else {
 			cout<<"Please specify the solver"<<endl;
 			cerr<<"Please specify the solver"<<endl;
-			return 0;
+			return 1;
 		}
 		
 		ofstream out("preprocessed.wcnf");
@@ -497,7 +497,7 @@ int main(int argc, char* argv[]){
 		if (readStatus > 0) {
 			cout<<"Failed to parse solution"<<endl;
 			cerr<<"Failed to parse solution"<<endl;
-			return 0;
+			return 1;
 		}
 		
 		if (opr.status == 2) {
