@@ -472,6 +472,8 @@ int main(int argc, char* argv[]){
 		pif.printInstance(out, outputFormat);
 		out.close();
 		
+		cerr << "Solve simplified formula with solver " << solver << endl;
+
 		maxPreprocessor::Timer solveTimer;
 		solveTimer.start();
 		int solverStatus = system((solver + " preprocessed.wcnf " + flags["solverflags"] + " > sol0.sol").c_str());
@@ -485,6 +487,8 @@ int main(int argc, char* argv[]){
 			return 1;
 		}
 		solveTimer.stop();
+
+		cerr << "Solving finished with exit code: " << exitCode << endl;
 		
 		maxPreprocessor::OutputReader opr;
 		ifstream in("sol0.sol");
