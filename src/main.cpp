@@ -1,3 +1,4 @@
+#include <csignal>
 #include <iostream>
 #include <fstream>
 #include <chrono>
@@ -473,10 +474,15 @@ int main(int argc, char* argv[]){
 		
 		maxPreprocessor::Timer solveTimer;
 		solveTimer.start();
-		if (system((solver + " preprocessed.wcnf " + flags["solverflags"] + " > sol0.sol").c_str())) {
-			cout<<"Solver error"<<endl;
-			cerr<<"Solver error"<<endl;
-			return 0;
+		int solverStatus = system((solver + " preprocessed.wcnf " + flags["solverflags"] + " > sol0.sol").c_str());
+		int exitCode = WEXITSTATUS(solverStatus);
+
+		// in case the solver was terminated abnormally, show it as error.
+		// in case the solver received the SIGTERM signal, try to run the remainder of maxpre to postprocess the model
+		if (!WIFEXITED(solverStatus) || ((WIFSIGNALED(solverStatus) && WTERMSIG(solverStatus) != SIGTERM))) {
+			cout<<"Solver error. Exit code: " << exitCode << " signal: " << (WIFSIGNALED(solverStatus) ? WTERMSIG(solverStatus) : -1) << endl;
+			cerr<<"Solver error. Exit code: " << exitCode << " signal: " << (WIFSIGNALED(solverStatus) ? WTERMSIG(solverStatus) : -1) << endl;
+			return 1;
 		}
 		solveTimer.stop();
 		
